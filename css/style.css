@@ -295,18 +295,24 @@ nav {
 .yt-btn:hover { background: var(--accent); color: var(--white); }
 
 /* Video kartları */
-.video-list { display: flex; flex-direction: column; gap: 1rem; }
+.video-list { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 1rem; 
+}
 .video-item {
   border: 1px solid var(--gray2); overflow: hidden;
+  border-radius: 6px;
   transition: border-color .2s;
+  display: flex; flex-direction: column;
 }
 .video-item:hover { border-color: var(--gray3); }
 .video-thumb-wrap {
-  position: relative; aspect-ratio: 16/9;
+  position: relative; aspect-ratio: 9/16;
   background: #111;
 }
 .video-thumb-wrap iframe {
-  position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
 }
 .video-item-info {
   padding: 1rem 1.25rem;
@@ -326,14 +332,26 @@ nav {
 }
 .video-delete:hover { border-color: #ff3333; color: #ff3333; background: rgba(255,51,51,.08); }
 
-/* Fotoğraf / Grafik grid */
+/* Fotoğraf / Grafik grid (Pinterest/Masonry Style) */
 .media-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+  column-count: 2; 
+  column-gap: 1rem;
 }
-.media-item { position: relative; aspect-ratio: 4/3; overflow: hidden; background: #111; border: 1px solid var(--gray2); }
+.media-item { 
+  position: relative; 
+  break-inside: avoid; 
+  margin-bottom: 1rem;
+  overflow: hidden; 
+  background: #111; 
+  border: 1px solid var(--gray2); 
+  border-radius: 6px;
+}
 .media-item img {
-  width: 100%; height: 100%; object-fit: cover;
-  transition: transform .4s, opacity .3s; opacity: .85;
+  width: 100%; 
+  height: auto; 
+  display: block;
+  transition: transform .4s, opacity .3s; 
+  opacity: .85;
 }
 .media-item:hover img { transform: scale(1.05); opacity: 1; }
 .media-item-label {
