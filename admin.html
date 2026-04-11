@@ -12,10 +12,12 @@
     <div class="admin-box">
       <h2>Yönetim Paneli</h2>
       <p style="margin-bottom:1.5rem;color:#888;">Giriş yapmak için bilgilerinizi girin.</p>
-      <input type="text" id="username" class="admin-input" placeholder="Kullanıcı Adı">
-      <input type="password" id="password" class="admin-input" placeholder="Şifre">
-      <button onclick="login()" class="admin-btn">Giriş Yap</button>
-      <p id="login-error" style="color:#ff4444;margin-top:1rem;display:none;"></p>
+      <form onsubmit="event.preventDefault(); login();">
+        <input type="text" id="username" class="admin-input" placeholder="Kullanıcı Adı">
+        <input type="password" id="password" class="admin-input" placeholder="Şifre">
+        <button type="submit" class="admin-btn">Giriş Yap</button>
+      </form>
+      <p id="login-error" style="color:#ff4444;margin-top:1rem;display:none;font-size:0.9rem;"></p>
     </div>
   </div>
 

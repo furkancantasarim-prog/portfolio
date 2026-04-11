@@ -19,19 +19,26 @@ async function login() {
   const pass = document.getElementById('password').value;
   const err = document.getElementById('login-error');
   
-  const res = await fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: user, password: pass })
-  });
-  
-  const data = await res.json();
-  if (data.success) {
-    err.style.display = 'none';
-    showDashboard();
-  } else {
-    err.innerText = data.error || 'Giriş başarısız.';
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    
+    // Yönlendirme (file protokolünden açılmışsa hata vereceği için trycatch mantıklı)
+    const data = await res.json();
+    if (data.success) {
+      err.style.display = 'none';
+      showDashboard();
+    } else {
+      err.innerText = data.error || 'Giriş başarısız.';
+      err.style.display = 'block';
+    }
+  } catch (e) {
+    err.innerText = 'Sunucuya bağlanılamadı. Lütfen Node sunucusunun çalıştığından ve http://localhost:3000 üzerinden girdiğinizden emin olun.';
     err.style.display = 'block';
+    console.error(e);
   }
 }
 
