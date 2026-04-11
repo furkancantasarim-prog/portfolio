@@ -182,10 +182,10 @@ async function renderMediaPanel(folder, label) {
       images.forEach(f => {
         const src = encodeURI(folder + '/' + f);
         html += `
-          <div class="media-item">
+          <div class="media-item" onclick="openLightbox('${src}')">
             <img src="${src}" alt="${escHtml(f)}" loading="lazy"
               onerror="this.parentElement.style.display='none'">
-            <div class="media-item-label">${escHtml(f)}</div>
+            <div class="media-item-label">Büyüt ⤢</div>
           </div>`;
       });
       html += '</div>';
@@ -197,4 +197,23 @@ async function renderMediaPanel(folder, label) {
 
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openLightbox(src) {
+  let box = document.getElementById('lightbox');
+  if (!box) {
+    const div = document.createElement('div');
+    div.id = 'lightbox';
+    div.innerHTML = '<div class="lightbox-close" onclick="closeLightbox()">✕</div><img id="lightbox-img" src="" onclick="event.stopPropagation()">';
+    div.onclick = closeLightbox;
+    document.body.appendChild(div);
+    box = div;
+  }
+  document.getElementById('lightbox-img').src = src;
+  box.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
 }
