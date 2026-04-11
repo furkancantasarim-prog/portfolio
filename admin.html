@@ -34,15 +34,13 @@
       <div class="admin-grid">
         <!-- VİDEOLAR -->
         <div class="admin-card">
-          <h3>Videolar (YouTube)</h3>
-          <div class="yt-add-area" style="margin-bottom:1rem">
-            <input id="yt-input" class="admin-input" type="text" placeholder="YouTube linki — youtube.com/watch?v=…">
-            <input id="yt-title" class="admin-input" type="text" placeholder="Video başlığı (opsiyonel)" style="margin-top:0.5rem">
-            <button class="admin-btn mt-2" onclick="addVideo()">Video Ekle</button>
+          <h3>Videolar (Manuel Yükleme)</h3>
+          <div style="margin-bottom:1rem;">
+            <input type="file" id="video-file" accept="video/mp4,video/x-m4v,video/*" class="admin-file">
+            <button class="admin-btn mt-2" onclick="uploadMedia('video')" id="btn-video">Video Yükle & Sıkıştır</button>
+            <p style="font-size:0.75rem; color:#888; margin-top:0.5rem; line-height:1.4;">Büyük boyutlu videolarınız (örn: 100MB) FFMpeg teknolojisiyle çözünürlük korunarak arka planda çok yüksek oranda (yaklaşık 10-20MB seviyesine) sıkıştırılıp otomatik web formatına dönüştürülür. İşlem videonun boyutuna göre **1-2 dakika** sürebilir, bekleyiniz.</p>
           </div>
-          <div id="admin-video-list" class="admin-list">
-             <!-- JS Doldurur -->
-          </div>
+          <div id="admin-video-list" class="admin-list media-admin-list"></div>
         </div>
 
         <!-- FOTOĞRAFLAR -->

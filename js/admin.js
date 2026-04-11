@@ -57,7 +57,7 @@ function showDashboard() {
 }
 
 function loadDashboardData() {
-  loadVideos();
+  loadMediaAdmin('video', 'admin-video-list');
   loadMediaAdmin('fotograf', 'admin-foto-list');
   loadMediaAdmin('grafik tasarim', 'admin-grafik-list');
 }
@@ -144,10 +144,18 @@ async function loadMediaAdmin(folder, elementId) {
     list.innerHTML = '';
     files.forEach(f => {
       const src = `/${folder}/${f}`;
-      const urlFolder = folder === 'fotograf' ? 'fotograf' : 'grafik';
+      const urlFolder = folder === 'fotograf' ? 'fotograf' : (folder === 'video' ? 'video' : 'grafik');
+      
+      let thumbHtml = '';
+      if (folder === 'video') {
+         thumbHtml = `<video src="${src}" class="media-thumb" muted></video>`;
+      } else {
+         thumbHtml = `<img src="${src}" class="media-thumb">`;
+      }
+
       list.innerHTML += `
         <div class="admin-list-item">
-          <img src="${src}" class="media-thumb">
+          ${thumbHtml}
           <div class="admin-list-item-title" style="flex:1; margin:0 10px;">${f}</div>
           <button class="admin-del-btn" onclick="deleteMedia('${urlFolder}', '${f}')">✕</button>
         </div>
@@ -159,12 +167,23 @@ async function loadMediaAdmin(folder, elementId) {
 }
 
 async function uploadMedia(category) {
-  const fileInput = document.getElementById(category === 'fotograf' ? 'foto-file' : 'grafik-file');
+  let fileInput, btn;
+  if(category === 'fotograf') { fileInput = document.getElementById('foto-file'); }
+  else if(category === 'grafik') { fileInput = document.getElementById('grafik-file'); }
+  else if(category === 'video') { fileInput = document.getElementById('video-file'); btn = document.getElementById('btn-video'); }
+  
   const file = fileInput.files[0];
   if (!file) return alert('Lütfen bir dosya seçin.');
   
   const formData = new FormData();
   formData.append('media', file);
+  
+  let orgText = "";
+  if (btn) {
+    orgText = btn.innerText;
+    btn.innerText = 'Yüklenip Sıkıştırılıyor... Lütfen Bekleyin...';
+    btn.disabled = true;
+  }
   
   try {
     const res = await fetch(`/api/upload/${category}`, {
@@ -175,7 +194,8 @@ async function uploadMedia(category) {
     if (res.ok) {
       fileInput.value = '';
       if (category === 'fotograf') loadMediaAdmin('fotograf', 'admin-foto-list');
-      else loadMediaAdmin('grafik tasarim', 'admin-grafik-list');
+      else if (category === 'grafik') loadMediaAdmin('grafik tasarim', 'admin-grafik-list');
+      else if (category === 'video') loadMediaAdmin('video', 'admin-video-list');
     } else {
       const error = await res.json();
       alert('Hata: ' + error.error);
@@ -183,13 +203,19 @@ async function uploadMedia(category) {
   } catch(e) {
     alert('Yükleme sırasında hata oluştu.');
   }
+  
+  if (btn) {
+    btn.innerText = orgText;
+    btn.disabled = false;
+  }
 }
 
 async function deleteMedia(category, filename) {
   if (!confirm('Bu dosyayı silmek istediğinizden emin misiniz?')) return;
   await fetch(`/api/media/${category}/${filename}`, { method: 'DELETE' });
   if (category === 'fotograf') loadMediaAdmin('fotograf', 'admin-foto-list');
-  else loadMediaAdmin('grafik tasarim', 'admin-grafik-list');
+  else if (category === 'grafik') loadMediaAdmin('grafik tasarim', 'admin-grafik-list');
+  else if (category === 'video') loadMediaAdmin('video', 'admin-video-list');
 }
 
 async function deployToGithub() {

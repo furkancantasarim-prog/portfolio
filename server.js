@@ -6,6 +6,10 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 const sharp = require('sharp');
+const ffmpeg = require('fluent-ffmpeg');
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
+
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -192,7 +196,7 @@ app.post('/api/deploy', requireAuth, (req, res) => {
 });
 
 // Create needed directories
-['data', 'fotograf', 'grafik tasarim'].forEach(dir => {
+['data', 'fotograf', 'grafik tasarim', 'video'].forEach(dir => {
   const dirPath = path.join(__dirname, dir);
   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath);
 });

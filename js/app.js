@@ -69,18 +69,7 @@ overlay.addEventListener('click', closePanel);
 document.getElementById('panel-close').addEventListener('click', closePanel);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
-/* ══════════════════════════════════════════
-   VIDEO YÖNETİCİSİ — Backend API
-   ══════════════════════════════════════════ */
-async function getVideos() {
-  try { 
-    // GitHub Pages'te doğrudan statik dosyadan okuruz
-    const res = await fetch('data/videos.json?t=' + Date.now());
-    return await res.json();
-  }
-  catch { return []; }
-}
-
+// YouTube getVideos() iptal edildi. Artık klasörden okunuyor.
 /* ══════════════════════════════════════════
    MEDYA TARAYICI — fotograf & grafik klasörleri
    (GitHub Pages'de dosya listesi için manifest.json kullanılır)
@@ -115,81 +104,48 @@ async function renderPanel(category) {
   panelBody.innerHTML = '<p style="color:#555;font-size:13px;padding:2rem 0">Yükleniyor…</p>';
 
   if (category === 'video') {
-    await renderVideoPanel();
+    await renderMediaPanel('video', 'Videolar', true);
   } else if (category === 'fotograf') {
-    await renderMediaPanel('fotograf', 'Fotoğraf');
+    await renderMediaPanel('fotograf', 'Fotoğraf', false);
   } else if (category === 'grafik') {
-    await renderMediaPanel('grafik tasarim', 'Grafik Tasarım');
+    await renderMediaPanel('grafik tasarim', 'Grafik Tasarım', false);
   }
 }
 
-async function renderVideoPanel() {
-  const videos = await getVideos();
-  let html = '';
-
-  if (videos.length === 0) {
-    html += `
-      <div class="empty-state">
-        <div class="empty-icon">▶</div>
-        <p>Henüz video eklenmemiş.</p>
-      </div>`;
-  } else {
-    html += `<p class="panel-section-title">Videolar (${videos.length})</p><div class="video-list">`;
-    videos.forEach(v => {
-      html += `
-        <div class="video-item">
-          <div class="video-thumb-wrap">
-            <iframe src="https://www.youtube.com/embed/${v.id}"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
-          </div>
-          <div class="video-item-info">
-            <div>
-              <div class="video-item-title">${escHtml(v.title)}</div>
-              <div class="video-item-url">${escHtml(v.url)}</div>
-            </div>
-          </div>
-        </div>`;
-    });
-    html += '</div>';
-  }
-
-  panelBody.innerHTML = html;
-}
-
-async function renderMediaPanel(folder, label) {
+async function renderMediaPanel(folder, label, isVideo = false) {
   const files = await loadMediaFiles(folder);
 
-  const imgExts = ['jpg','jpeg','png','gif','webp','avif','svg'];
-  const isImage = f => imgExts.includes(f.split('.').pop().toLowerCase());
-
-  let html = `<p class="panel-section-title">${label} Çalışmaları</p>`;
+  let html = `<p class="panel-section-title">${label}</p>`;
 
   if (!files || files.length === 0) {
     html += `
       <div class="empty-state">
-        <div class="empty-icon">◻</div>
-        <p>Henüz dosya yok.<br>
-          <strong style="color:#fff">"${folder}"</strong> klasörüne<br>
-          dosya at ve manifest.json'ı güncelle.</p>
+        <div class="empty-icon">${isVideo ? '▶' : '◻'}</div>
+        <p>Henüz dosya yüklenmemiş.</p>
       </div>`;
   } else {
-    const images = files.filter(isImage);
-    if (images.length === 0) {
-      html += `<div class="empty-state"><p>Klasörde görüntü bulunamadı.</p></div>`;
-    } else {
-      html += '<div class="media-grid">';
-      images.forEach(f => {
-        const src = encodeURI(folder + '/' + f);
+    html += isVideo ? '<div class="video-list">' : '<div class="media-grid">';
+    
+    files.forEach(f => {
+      const src = encodeURI(folder + '/' + f);
+      if (isVideo) {
+        html += `
+          <div class="video-item" style="border:none;background:transparent;">
+            <div class="video-thumb-wrap" style="aspect-ratio:auto;">
+              <video src="${src}" controls style="width:100%; border-radius:8px;" loading="lazy"></video>
+            </div>
+            <div style="font-size:12px;color:#aaa;margin-top:5px;text-align:center;">${escHtml(f)}</div>
+          </div>`;
+      } else {
         html += `
           <div class="media-item" onclick="openLightbox('${src}')">
             <img src="${src}" alt="${escHtml(f)}" loading="lazy"
               onerror="this.parentElement.style.display='none'">
             <div class="media-item-label">Büyüt ⤢</div>
           </div>`;
-      });
-      html += '</div>';
-    }
+      }
+    });
+    html += '</div>';
   }
 
   panelBody.innerHTML = html;
