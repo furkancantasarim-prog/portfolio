@@ -98,9 +98,16 @@ app.delete('/api/videos/:id', requireAuth, (req, res) => {
   }
 });
 
-// File Upload
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// File Upload Storage - Bütün dosyaları temporary diske kaydeder (RAM limitine takılmamak için)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'data')); // Temporary folder
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'temp_' + Date.now() + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage, limits: { fileSize: 300 * 1024 * 1024 } }); // 300 MB limit
 
 function updateManifest(folderName) {
   const folderPath = path.join(__dirname, folderName);
@@ -108,11 +115,10 @@ function updateManifest(folderName) {
   
   try {
     const files = fs.readdirSync(folderPath);
-    // filter only images and don't include manifest.json
-    const imgExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.avif'];
-    const images = files.filter(f => imgExts.includes(path.extname(f).toLowerCase()));
+    const exts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.avif', '.mp4', '.m4v', '.mov', '.webm'];
+    const mediaFiles = files.filter(f => exts.includes(path.extname(f).toLowerCase()));
     
-    fs.writeFileSync(manifestPath, JSON.stringify({ files: images }, null, 2));
+    fs.writeFileSync(manifestPath, JSON.stringify({ files: mediaFiles }, null, 2));
   } catch (e) {
     console.error('Error updating manifest:', e);
   }
@@ -125,30 +131,74 @@ app.post('/api/upload/:category', requireAuth, upload.single('media'), async (re
   let folder = '';
   if (category === 'fotograf') folder = 'fotograf';
   else if (category === 'grafik') folder = 'grafik tasarim';
-  else return res.status(400).json({ error: 'Invalid category' });
+  else if (category === 'video') folder = 'video';
+  else {
+    fs.unlinkSync(req.file.path);
+    return res.status(400).json({ error: 'Invalid category' });
+  }
 
-  let filename = Date.now() + '-' + req.file.originalname.replace(/\s+/g, '_');
+  let baseName = req.file.originalname.replace(/\s+/g, '_').replace(/\.[^/.]+$/, "");
   const mime = req.file.mimetype;
+  const tempFilePath = req.file.path;
+  let finalFileName = '';
   
   try {
-    // Fotoğraf ve resim türevlerini sıkıştırarak WebP formatına çeviriyoruz. (GIF ve SVG hariç)
-    if (mime.startsWith('image/') && mime !== 'image/svg+xml' && mime !== 'image/gif') {
-      filename = filename.replace(/\.[^/.]+$/, "") + ".webp";
-      const filepath = path.join(__dirname, folder, filename);
-      
-      await sharp(req.file.buffer)
-        .resize({ width: 1200, withoutEnlargement: true })  // Maksimum 1200px genişlik
-        .webp({ quality: 80 }) // Yüksek oranlı kalite-boyut optimizasyonu
-        .toFile(filepath);
-    } else {
-      const filepath = path.join(__dirname, folder, filename);
-      fs.writeFileSync(filepath, req.file.buffer);
-    }
-    
+    await new Promise((resolve, reject) => {
+      // VIDEO PROCESSING (FFMPEG COMPRESSION)
+      if (category === 'video' || (mime && mime.startsWith('video/'))) {
+        finalFileName = Date.now() + '-' + baseName + '.mp4';
+        const finalPath = path.join(__dirname, folder, finalFileName);
+        
+        ffmpeg(tempFilePath)
+          .outputOptions([
+            '-vcodec libx264',
+            '-crf 28', 
+            '-preset veryfast', 
+            '-vf scale=-2:1080', 
+            '-acodec aac',
+            '-b:a 128k'
+          ])
+          .save(finalPath)
+          .on('end', () => {
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+            resolve();
+          })
+          .on('error', (err) => {
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+            reject(err);
+          });
+      } 
+      // IMAGE PROCESSING (SHARP WEBP)
+      else if (mime && mime.startsWith('image/') && mime !== 'image/svg+xml' && mime !== 'image/gif') {
+        finalFileName = Date.now() + '-' + baseName + '.webp';
+        const finalPath = path.join(__dirname, folder, finalFileName);
+        
+        sharp(tempFilePath)
+          .resize({ width: 1200, withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toFile(finalPath)
+          .then(() => {
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+            resolve();
+          }).catch(err => {
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+            reject(err);
+          });
+      } 
+      // OTHER RAW FILES
+      else {
+        finalFileName = Date.now() + '-' + req.file.originalname.replace(/\s+/g, '_');
+        const finalPath = path.join(__dirname, folder, finalFileName);
+        fs.renameSync(tempFilePath, finalPath);
+        resolve();
+      }
+    });
+
     updateManifest(folder);
-    res.json({ success: true, filename: filename });
+    res.json({ success: true, filename: finalFileName });
   } catch (err) {
-    res.status(500).json({ error: 'Resim işlenirken hata oluştu' });
+    console.error(err);
+    res.status(500).json({ error: 'Medya işlenirken/sıkıştırılırken hata oluştu.' });
   }
 });
 
@@ -160,6 +210,7 @@ app.delete('/api/media/:category/:filename', requireAuth, (req, res) => {
   let folder = '';
   if (category === 'fotograf') folder = 'fotograf';
   else if (category === 'grafik') folder = 'grafik tasarim';
+  else if (category === 'video') folder = 'video';
   else return res.status(400).json({ error: 'Invalid category' });
 
   const filepath = path.join(__dirname, folder, filename);
