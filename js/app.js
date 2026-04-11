@@ -70,63 +70,14 @@ document.getElementById('panel-close').addEventListener('click', closePanel);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
 /* ══════════════════════════════════════════
-   VIDEO YÖNETİCİSİ — localStorage tabanlı
+   VIDEO YÖNETİCİSİ — Backend API
    ══════════════════════════════════════════ */
-function getVideos() {
-  try { return JSON.parse(localStorage.getItem('pf_videos') || '[]'); }
+async function getVideos() {
+  try { 
+    const res = await fetch('/api/videos');
+    return await res.json();
+  }
   catch { return []; }
-}
-function saveVideos(list) {
-  localStorage.setItem('pf_videos', JSON.stringify(list));
-}
-
-function ytIdFromUrl(url) {
-  /* Desteklenen formatlar:
-     https://www.youtube.com/watch?v=XXXXX
-     https://youtu.be/XXXXX
-     https://www.youtube.com/embed/XXXXX  */
-  const patterns = [
-    /(?:v=)([a-zA-Z0-9_-]{11})/,
-    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
-    /embed\/([a-zA-Z0-9_-]{11})/
-  ];
-  for (const p of patterns) {
-    const m = url.match(p);
-    if (m) return m[1];
-  }
-  return null;
-}
-
-function addVideo() {
-  const input = document.getElementById('yt-input');
-  const raw = input.value.trim();
-  if (!raw) return;
-
-  const id = ytIdFromUrl(raw);
-  if (!id) {
-    alert('Geçerli bir YouTube linki girin.\nÖrnek: https://www.youtube.com/watch?v=XXXXXX');
-    return;
-  }
-
-  const list = getVideos();
-  if (list.find(v => v.id === id)) {
-    alert('Bu video zaten eklenmiş.');
-    input.value = '';
-    return;
-  }
-
-  const title = document.getElementById('yt-title').value.trim() || 'Video ' + (list.length + 1);
-  list.push({ id, title, url: raw });
-  saveVideos(list);
-  input.value = '';
-  document.getElementById('yt-title').value = '';
-  renderPanel('video');
-}
-
-function deleteVideo(id) {
-  if (!confirm('Bu videoyu silmek istiyor musun?')) return;
-  saveVideos(getVideos().filter(v => v.id !== id));
-  renderPanel('video');
 }
 
 /* ══════════════════════════════════════════
@@ -163,7 +114,7 @@ async function renderPanel(category) {
   panelBody.innerHTML = '<p style="color:#555;font-size:13px;padding:2rem 0">Yükleniyor…</p>';
 
   if (category === 'video') {
-    renderVideoPanel();
+    await renderVideoPanel();
   } else if (category === 'fotograf') {
     await renderMediaPanel('fotograf', 'Fotoğraf');
   } else if (category === 'grafik') {
@@ -171,26 +122,15 @@ async function renderPanel(category) {
   }
 }
 
-function renderVideoPanel() {
-  const videos = getVideos();
-  let html = `
-    <div class="yt-add-area">
-      <p class="panel-section-title">Yeni Video Ekle</p>
-      <div class="yt-input-row" style="margin-bottom:.6rem">
-        <input id="yt-input" class="yt-input" type="text"
-          placeholder="YouTube linki — youtube.com/watch?v=…">
-        <button class="yt-btn" onclick="addVideo()">Ekle</button>
-      </div>
-      <input id="yt-title" class="yt-input" type="text"
-        placeholder="Video başlığı (opsiyonel)" style="width:100%">
-    </div>
-  `;
+async function renderVideoPanel() {
+  const videos = await getVideos();
+  let html = '';
 
   if (videos.length === 0) {
     html += `
       <div class="empty-state">
         <div class="empty-icon">▶</div>
-        <p>Henüz video eklenmemiş.<br>Üstteki alana YouTube linki yapıştır.</p>
+        <p>Henüz video eklenmemiş.</p>
       </div>`;
   } else {
     html += `<p class="panel-section-title">Videolar (${videos.length})</p><div class="video-list">`;
@@ -207,7 +147,6 @@ function renderVideoPanel() {
               <div class="video-item-title">${escHtml(v.title)}</div>
               <div class="video-item-url">${escHtml(v.url)}</div>
             </div>
-            <button class="video-delete" onclick="deleteVideo('${v.id}')" title="Sil">✕</button>
           </div>
         </div>`;
     });
