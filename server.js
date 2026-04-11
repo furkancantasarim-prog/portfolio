@@ -171,11 +171,15 @@ app.get('/admin', (req, res) => {
 
 // Deploy to GitHub Route
 app.post('/api/deploy', requireAuth, (req, res) => {
-  exec('git add . && git commit -m "Admin paneli: İçerik güncellendi" && git push origin main', (error, stdout, stderr) => {
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
-    res.json({ success: true });
+  exec('git add .', () => {
+    exec('git commit -m "Admin paneli: İçerik güncellendi"', () => {
+      exec('git push origin main', (err, stdout, stderr) => {
+        if (err) {
+          return res.status(500).json({ error: err.message + ' (Eğer hiçbir şey değiştirmeden veya yeni resim eklemeden yüklemeye çalışıyorsanız hata verecektir. Önce sisteme bir içerik ekleyin.)' });
+        }
+        res.json({ success: true });
+      });
+    });
   });
 });
 
