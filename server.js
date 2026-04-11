@@ -5,6 +5,7 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
+const sharp = require('sharp');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -94,20 +95,7 @@ app.delete('/api/videos/:id', requireAuth, (req, res) => {
 });
 
 // File Upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const category = req.params.category;
-    let folder = '';
-    if (category === 'fotograf') folder = 'fotograf';
-    else if (category === 'grafik') folder = 'grafik tasarim';
-    else return cb(new Error('Invalid category'));
-    
-    cb(null, path.join(__dirname, folder));
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '_'));
-  }
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 function updateManifest(folderName) {
@@ -126,18 +114,38 @@ function updateManifest(folderName) {
   }
 }
 
-app.post('/api/upload/:category', requireAuth, upload.single('media'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-  const category = req.params.category;
-  if (category === 'fotograf') {
-    updateManifest('fotograf');
-  } else if (category === 'grafik') {
-    updateManifest('grafik tasarim');
-  }
+app.post('/api/upload/:category', requireAuth, upload.single('media'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   
-  res.json({ success: true, filename: req.file.filename });
+  const category = req.params.category;
+  let folder = '';
+  if (category === 'fotograf') folder = 'fotograf';
+  else if (category === 'grafik') folder = 'grafik tasarim';
+  else return res.status(400).json({ error: 'Invalid category' });
+
+  let filename = Date.now() + '-' + req.file.originalname.replace(/\s+/g, '_');
+  const mime = req.file.mimetype;
+  
+  try {
+    // Fotoğraf ve resim türevlerini sıkıştırarak WebP formatına çeviriyoruz. (GIF ve SVG hariç)
+    if (mime.startsWith('image/') && mime !== 'image/svg+xml' && mime !== 'image/gif') {
+      filename = filename.replace(/\.[^/.]+$/, "") + ".webp";
+      const filepath = path.join(__dirname, folder, filename);
+      
+      await sharp(req.file.buffer)
+        .resize({ width: 1200, withoutEnlargement: true })  // Maksimum 1200px genişlik
+        .webp({ quality: 80 }) // Yüksek oranlı kalite-boyut optimizasyonu
+        .toFile(filepath);
+    } else {
+      const filepath = path.join(__dirname, folder, filename);
+      fs.writeFileSync(filepath, req.file.buffer);
+    }
+    
+    updateManifest(folder);
+    res.json({ success: true, filename: filename });
+  } catch (err) {
+    res.status(500).json({ error: 'Resim işlenirken hata oluştu' });
+  }
 });
 
 // Admin Delete Media
