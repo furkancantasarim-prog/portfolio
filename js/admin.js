@@ -63,6 +63,20 @@ function loadDashboardData() {
 }
 
 /* VIDEOS */
+function ytIdFromUrl(url) {
+  const patterns = [
+    /(?:v=)([a-zA-Z0-9_-]{11})/,
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    /embed\/([a-zA-Z0-9_-]{11})/,
+    /shorts\/([a-zA-Z0-9_-]{11})/
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
 async function loadVideos() {
   const res = await fetch('/api/videos');
   const videos = await res.json();
@@ -79,7 +93,7 @@ async function loadVideos() {
       <div class="admin-list-item">
         <div style="flex:1;">
           <div class="admin-list-item-title">${v.title || 'İsimsiz Video'}</div>
-          <div class="admin-list-item-url" style="color:#666;font-size:0.75rem;">Embed Kodu Kayıtlı</div>
+          <div class="admin-list-item-url">${v.url}</div>
         </div>
         <button class="admin-del-btn" onclick="deleteVideo('${v.id}')">✕</button>
       </div>
@@ -88,16 +102,16 @@ async function loadVideos() {
 }
 
 async function addVideo() {
-  const embedCode = document.getElementById('yt-input').value.trim();
-  const title = document.getElementById('yt-title').value.trim();
-  const id = 'vid_' + Date.now();
+  const urlParams = document.getElementById('yt-input').value;
+  const title = document.getElementById('yt-title').value;
+  const id = ytIdFromUrl(urlParams);
   
-  if (!embedCode.includes('<iframe')) return alert('Lütfen geçerli bir iframe (gömme) kodu yapıştırın.');
+  if (!id) return alert('Geçerli bir YouTube linki girin.');
   
   await fetch('/api/videos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, title: title || 'İsimsiz Video', embedCode })
+    body: JSON.stringify({ id, title: title || ('Video ' + id), url: urlParams })
   });
   
   document.getElementById('yt-input').value = '';

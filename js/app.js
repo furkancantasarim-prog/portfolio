@@ -139,11 +139,14 @@ async function renderVideoPanel() {
       html += `
         <div class="video-item">
           <div class="video-thumb-wrap">
-            ${v.embedCode}
+            <iframe src="https://www.youtube.com/embed/${v.id}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
           </div>
           <div class="video-item-info">
             <div>
               <div class="video-item-title">${escHtml(v.title)}</div>
+              <div class="video-item-url">${escHtml(v.url)}</div>
             </div>
           </div>
         </div>`;
