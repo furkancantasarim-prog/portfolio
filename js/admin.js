@@ -190,3 +190,26 @@ async function deleteMedia(category, filename) {
   if (category === 'fotograf') loadMediaAdmin('fotograf', 'admin-foto-list');
   else loadMediaAdmin('grafik tasarim', 'admin-grafik-list');
 }
+
+async function deployToGithub() {
+  if (!confirm('Tüm değişiklikleriniz kalıcı olarak canlı web sitenize (GitHub) aktarılacak. Emin misiniz?')) return;
+  const btn = document.querySelector('button[onclick="deployToGithub()"]');
+  const orgText = btn.innerText;
+  btn.innerText = '⏳ GitHub\'a Gönderiliyor...';
+  btn.disabled = true;
+  
+  try {
+    const res = await fetch('/api/deploy', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      alert('Tebrikler! Yaptığınız tüm değişiklikler GitHub Pages üzerinden canlıya aktarıldı. Birkaç dakika içinde sitenizde güncellenmiş olarak görünecektir.');
+    } else {
+      alert('Hata oluştu: ' + data.error);
+    }
+  } catch (e) {
+    alert('İşlem sırasında beklenmedik bir hata oluştu.');
+  }
+  
+  btn.innerText = orgText;
+  btn.disabled = false;
+}

@@ -23,9 +23,12 @@
 
   <div id="dashboard" class="admin-container" style="display:none; align-items:flex-start; padding: 2rem;">
     <div class="admin-dashboard-container">
-      <div class="admin-header">
+      <div class="admin-header" style="display:flex; justify-content:space-between; align-items:center;">
         <h2>Yönetim Paneli</h2>
-        <button onclick="logout()" class="admin-btn ghost">Çıkış Yap</button>
+        <div style="display:flex; gap:10px;">
+          <button onclick="deployToGithub()" class="admin-btn" style="width:auto; padding:0.5rem 1rem; background:#4CAF50; color:#fff; border:none;">🚀 Github'a Canlıya Al</button>
+          <button onclick="logout()" class="admin-btn ghost">Çıkış Yap</button>
+        </div>
       </div>
 
       <div class="admin-grid">

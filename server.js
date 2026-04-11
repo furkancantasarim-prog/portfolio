@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -165,7 +166,17 @@ app.delete('/api/media/:category/:filename', requireAuth, (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.sendFile('admin.html', { root: __dirname });
+});
+
+// Deploy to GitHub Route
+app.post('/api/deploy', requireAuth, (req, res) => {
+  exec('git add . && git commit -m "Admin paneli: İçerik güncellendi" && git push origin main', (error, stdout, stderr) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json({ success: true });
+  });
 });
 
 // Create needed directories

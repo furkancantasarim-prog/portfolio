@@ -74,7 +74,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel()
    ══════════════════════════════════════════ */
 async function getVideos() {
   try { 
-    const res = await fetch('/api/videos');
+    // GitHub Pages'te doğrudan statik dosyadan okuruz
+    const res = await fetch('data/videos.json?t=' + Date.now());
     return await res.json();
   }
   catch { return []; }
