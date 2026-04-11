@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[Ad Soyad] — Portfolyo</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">[Ad<span>.</span>]</div>
+  <a class="nav-mail" href="mailto:eposta@adresin.com">eposta@adresin.com</a>
+</nav>
+
+<!-- ABOUT / HERO -->
+<section id="about">
+
+  <!-- 3D Blob arka plan -->
+  <div class="hero-blob">
+    <div class="blob-wrap">
+      <div class="blob-glow"></div>
+      <div class="blob-ring"></div>
+      <div class="blob"></div>
+    </div>
+  </div>
+
+  <!-- İçerik -->
+  <div class="about-content">
+
+    <p class="about-eyebrow reveal">Video · Tasarım · Fotoğrafçılık</p>
+
+    <h1 class="about-title reveal">
+      <span>[Adın]</span><br>
+      <span class="outline">[Soyadın]</span><br>
+      <span class="hl">Portfolyo.</span>
+    </h1>
+
+    <p class="about-bio reveal">
+      <strong>Merhaba.</strong> Video prodüksiyon, grafik tasarım ve fotoğrafçılık alanlarında çalışıyorum.
+      Her projede teknik detayları estetik kaygıyla harmanlayarak özgün içerikler üretiyorum.
+    </p>
+
+    <div class="about-stats reveal">
+      <div>
+        <div class="stat-num">50<em>+</em></div>
+        <div class="stat-lbl">Tamamlanan Proje</div>
+      </div>
+      <div>
+        <div class="stat-num">3<em>+</em></div>
+        <div class="stat-lbl">Yıl Deneyim</div>
+      </div>
+      <div>
+        <div class="stat-num">30<em>+</em></div>
+        <div class="stat-lbl">Mutlu Müşteri</div>
+      </div>
+    </div>
+
+    <!-- 3 KATEGORİ LİNKİ -->
+    <div class="category-links reveal">
+
+      <a class="cat-link" href="#" onclick="openPanel('video'); return false;">
+        <div class="cat-left">
+          <span class="cat-num">01</span>
+          <span class="cat-name">Video &amp; Reklam Filmi</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span class="cat-desc">YouTube linkleri</span>
+          <span class="cat-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="cat-link" href="#" onclick="openPanel('grafik'); return false;">
+        <div class="cat-left">
+          <span class="cat-num">02</span>
+          <span class="cat-name">Grafik Tasarım</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span class="cat-desc">Görsel çalışmalar</span>
+          <span class="cat-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="cat-link" href="#" onclick="openPanel('fotograf'); return false;">
+        <div class="cat-left">
+          <span class="cat-num">03</span>
+          <span class="cat-name">Fotoğrafçılık</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span class="cat-desc">Fotoğraf arşivi</span>
+          <span class="cat-arrow">↗</span>
+        </div>
+      </a>
+
+    </div><!-- /category-links -->
+  </div><!-- /about-content -->
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span>[Ad Soyad]</span></p>
+  <p>Elazığ, <span>Türkiye</span></p>
+  <p>Tüm Hakları Saklıdır</p>
+</footer>
+
+<!-- ══════════════════════════════
+     PANEL OVERLAY + PANEL
+     ══════════════════════════════ -->
+<div id="panel-overlay"></div>
+
+<div id="panel">
+  <div class="panel-header">
+    <div class="panel-title" id="panel-title-text">Çalışmalar</div>
+    <button class="panel-close" id="panel-close" title="Kapat">✕</button>
+  </div>
+  <div class="panel-body" id="panel-body">
+    <!-- JS tarafından doldurulur -->
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
