@@ -64,15 +64,15 @@ app.get('/api/videos', (req, res) => {
 });
 
 app.post('/api/videos', requireAuth, (req, res) => {
-  const { id, title, url } = req.body;
-  if (!id || !url) return res.status(400).json({ error: 'Invalid data' });
+  const { id, title, embedCode } = req.body;
+  if (!id || !embedCode) return res.status(400).json({ error: 'Invalid data' });
 
   try {
     let data = [];
     if (fs.existsSync(videosFile)) {
       data = JSON.parse(fs.readFileSync(videosFile, 'utf8'));
     }
-    data.push({ id, title, url });
+    data.push({ id, title, embedCode });
     fs.writeFileSync(videosFile, JSON.stringify(data, null, 2));
     res.json({ success: true, videos: data });
   } catch (err) {
