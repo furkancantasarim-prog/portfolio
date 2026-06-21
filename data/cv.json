@@ -1,0 +1,62 @@
+{
+  "name": "Furkan Can",
+  "title": "Medya Sorumlusu & Grafik Tasarımcı",
+  "profilePhoto": "fotograf/cv-profile.webp",
+  "education": [
+    {
+      "school": "Bingöl Üniversitesi",
+      "department": "Görsel İşitsel Teknikler ve Medya Yapımcılığı",
+      "startDate": "2019",
+      "endDate": "2021",
+      "description": "Radyo ve Televizyon Programcılığı alanında teorik ve pratik eğitim."
+    },
+    {
+      "school": "Anadolu Üniversitesi",
+      "department": "Medya ve İletişim (Lisans)",
+      "startDate": "2021",
+      "endDate": "Devam Ediyor",
+      "description": "Kitle iletişimi, marka yönetimi ve dijital medya stratejileri üzerine uzmanlık."
+    }
+  ],
+  "experience": [
+    {
+      "company": "Bingöl Üniversitesi Rektörlüğü",
+      "role": "Medya Birimi Sorumlusu & Grafik Tasarımcı",
+      "startDate": "2022",
+      "endDate": "Devam Ediyor",
+      "description": "Rektörlük bünyesindeki tüm video prodüksiyon, tanıtım filmleri, sosyal medya görselleri ve kurumsal tasarımların hazırlanması."
+    },
+    {
+      "company": "Freelance",
+      "role": "Video Prodüktör & Dijital İçerik Üreticisi",
+      "startDate": "2019",
+      "endDate": "2022",
+      "description": "Çeşitli markalar için tanıtım videoları, reklam filmleri, kurgu ve post-prodüksiyon hizmetleri."
+    }
+  ],
+  "certificates": [
+    {
+      "name": "İleri Düzey Adobe Premiere Pro & After Effects",
+      "organization": "Adobe Certified Professional",
+      "date": "2022"
+    },
+    {
+      "name": "Profesyonel Grafik Tasarım & Tipografi Eğitimi",
+      "organization": "BTK Akademi",
+      "date": "2023"
+    },
+    {
+      "name": "Dijital Fotoğrafçılık ve Işık Teknikleri",
+      "organization": "İstanbul İşletme Enstitüsü",
+      "date": "2021"
+    }
+  ],
+  "skills": [
+    "CorelDraw",
+    "Photoshop",
+    "Premiere Pro",
+    "After Effects",
+    "Lightroom",
+    "Illustrator"
+  ]
+}

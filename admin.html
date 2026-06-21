@@ -64,6 +64,71 @@
         </div>
 
       </div>
+
+      <!-- CV YÖNETİMİ -->
+      <div class="admin-card" style="margin-top: 1.5rem;">
+        <h3>CV / Özgeçmiş Yönetimi</h3>
+        <div style="display:grid; grid-template-columns: 250px 1fr; gap: 2rem;">
+          <!-- Sol Sütun: Profil Resmi -->
+          <div>
+            <h4 style="margin-bottom: 0.5rem; color: #aaa; font-size: 0.9rem;">Profil Resmi</h4>
+            <div style="margin-bottom: 1rem; text-align: center;">
+              <img id="admin-cv-preview" src="fotograf/cv-profile.webp" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #ff4d00; display: inline-block;" onerror="this.src='https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'">
+            </div>
+            <input type="file" id="cv-profile-file" accept="image/*" class="admin-file">
+            <button class="admin-btn mt-2" onclick="uploadCVProfile()" id="btn-cv-profile">Profil Resmini Güncelle</button>
+          </div>
+          
+          <!-- Sağ Sütun: Form Bilgileri -->
+          <div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="display:block; margin-bottom: 0.3rem; font-size: 0.8rem; color: #aaa;">Ad Soyad</label>
+                <input type="text" id="cv-name" class="admin-input" style="margin-bottom:0;" placeholder="Örn: Furkan Can">
+              </div>
+              <div>
+                <label style="display:block; margin-bottom: 0.3rem; font-size: 0.8rem; color: #aaa;">Ünvan</label>
+                <input type="text" id="cv-title" class="admin-input" style="margin-bottom:0;" placeholder="Örn: Medya Sorumlusu & Tasarımcı">
+              </div>
+            </div>
+            <!-- EĞİTİM BİLGİLERİ -->
+            <div style="margin-bottom: 2rem;">
+              <h4 style="color: #ff4d00; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; font-size: 0.95rem; font-weight: 600;">Eğitim Bilgileri</h4>
+              <div id="education-form-container"></div>
+              <button type="button" class="admin-add-btn" onclick="addEducationField()">➕ Yeni Eğitim Ekle</button>
+            </div>
+            
+            <!-- İŞ DENEYİMLERİ -->
+            <div style="margin-bottom: 2rem;">
+              <h4 style="color: #ff4d00; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; font-size: 0.95rem; font-weight: 600;">İş Deneyimleri</h4>
+              <div id="experience-form-container"></div>
+              <button type="button" class="admin-add-btn" onclick="addExperienceField()">➕ Yeni İş Deneyimi Ekle</button>
+            </div>
+            
+            <!-- SERTİFİKALAR -->
+            <div style="margin-bottom: 2rem;">
+              <h4 style="color: #ff4d00; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; font-size: 0.95rem; font-weight: 600;">Sertifikalar</h4>
+              <div id="certificates-form-container"></div>
+              <button type="button" class="admin-add-btn" onclick="addCertificateField()">➕ Yeni Sertifika Ekle</button>
+            </div>
+            
+            <!-- KULLANILAN PROGRAMLAR / YETENEKLER -->
+            <div style="margin-bottom: 2rem;">
+              <h4 style="color: #ff4d00; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; font-size: 0.95rem; font-weight: 600;">Kullanılan Programlar &amp; Yetenekler</h4>
+              <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+                <input type="text" id="new-skill-input" class="admin-input" style="margin-bottom:0;" placeholder="Örn: Photoshop, CorelDraw...">
+                <button type="button" class="admin-btn" onclick="addSkillBadge()" style="width: auto; padding: 0 1.5rem; background: #ff4d00; color: #fff;">Program Ekle</button>
+              </div>
+              <div id="skills-list-container" class="admin-skills-container"></div>
+            </div>
+            
+            <button class="admin-btn" onclick="saveCVData()" style="background: #ff4d00; color: #fff; margin-top: 1.5rem; font-size: 1rem; padding: 1rem;">CV Değişikliklerini Kaydet</button>
+          </div>
+        </div>
+      </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

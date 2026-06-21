@@ -228,6 +228,62 @@ app.delete('/api/media/:category/:filename', requireAuth, (req, res) => {
   }
 });
 
+// CV API Endpoints
+const cvFile = path.join(__dirname, 'data', 'cv.json');
+
+app.get('/api/cv', (req, res) => {
+  try {
+    if (fs.existsSync(cvFile)) {
+      const data = fs.readFileSync(cvFile, 'utf8');
+      res.json(JSON.parse(data));
+    } else {
+      res.json({});
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Error reading CV' });
+  }
+});
+
+app.post('/api/cv', requireAuth, (req, res) => {
+  try {
+    const cvData = req.body;
+    fs.writeFileSync(cvFile, JSON.stringify(cvData, null, 2), 'utf8');
+    res.json({ success: true, cv: cvData });
+  } catch (err) {
+    res.status(500).json({ error: 'Error saving CV' });
+  }
+});
+
+// CV Profile Photo Upload
+app.post('/api/upload/cv-profile', requireAuth, upload.single('media'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  
+  const tempFilePath = req.file.path;
+  const finalPath = path.join(__dirname, 'fotograf', 'cv-profile.webp');
+  
+  try {
+    await sharp(tempFilePath)
+      .resize({ width: 400, height: 400, fit: 'cover' })
+      .webp({ quality: 90 })
+      .toFile(finalPath);
+      
+    if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+    
+    if (fs.existsSync(cvFile)) {
+      const cvData = JSON.parse(fs.readFileSync(cvFile, 'utf8'));
+      cvData.profilePhoto = 'fotograf/cv-profile.webp';
+      fs.writeFileSync(cvFile, JSON.stringify(cvData, null, 2), 'utf8');
+    }
+    
+    updateManifest('fotograf');
+    res.json({ success: true, filename: 'cv-profile.webp' });
+  } catch (err) {
+    console.error(err);
+    if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+    res.status(500).json({ error: 'Profil resmi işlenirken hata oluştu.' });
+  }
+});
+
 app.get('/admin', (req, res) => {
   res.sendFile('admin.html', { root: __dirname });
 });

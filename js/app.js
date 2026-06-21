@@ -51,7 +51,8 @@ function openPanel(category) {
   const labels = {
     'video':   'Video <span>& Reklam</span>',
     'grafik':  'Grafik <span>Tasarım</span>',
-    'fotograf': 'Fotoğraf<span>çılık</span>'
+    'fotograf': 'Fotoğraf<span>çılık</span>',
+    'cv': 'CV <span>/ Özgeçmiş</span>'
   };
   panelTitle.innerHTML = labels[category] || category;
 
@@ -109,6 +110,123 @@ async function renderPanel(category) {
     await renderMediaPanel('fotograf', 'Fotoğraf', false);
   } else if (category === 'grafik') {
     await renderMediaPanel('grafik tasarim', 'Grafik Tasarım', false);
+  } else if (category === 'cv') {
+    await renderCVPanel();
+  }
+}
+
+async function renderCVPanel() {
+  try {
+    const res = await fetch('data/cv.json?t=' + Date.now());
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    
+    let html = `
+      <div class="cv-container">
+        <!-- Header / Profil Kartı -->
+        <div class="cv-header">
+          <div class="cv-avatar-wrap">
+            <img src="${data.profilePhoto || 'fotograf/cv-profile.webp'}" alt="${escHtml(data.name)}" class="cv-avatar" onerror="this.src='https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'">
+          </div>
+          <div class="cv-header-info">
+            <h3>${escHtml(data.name)}</h3>
+            <p>${escHtml(data.title)}</p>
+          </div>
+        </div>
+        
+        <!-- Öğrenim Bilgileri -->
+        <div class="cv-section">
+          <p class="panel-section-title">ÖĞRENİM BİLGİLERİ</p>
+          <div class="cv-timeline">
+    `;
+    
+    (data.education || []).forEach(edu => {
+      html += `
+        <div class="cv-timeline-item">
+          <div class="cv-item-header">
+            <div class="cv-item-title">${escHtml(edu.school)}</div>
+            <div class="cv-item-date">${escHtml(edu.startDate)} - ${escHtml(edu.endDate)}</div>
+          </div>
+          <div class="cv-item-subtitle">${escHtml(edu.department)}</div>
+          <div class="cv-item-desc">${escHtml(edu.description || '')}</div>
+        </div>
+      `;
+    });
+    
+    html += `
+          </div>
+        </div>
+        
+        <!-- İş Deneyimleri -->
+        <div class="cv-section">
+          <p class="panel-section-title">İŞ DENEYİMLERİ</p>
+          <div class="cv-timeline">
+    `;
+    
+    (data.experience || []).forEach(exp => {
+      html += `
+        <div class="cv-timeline-item">
+          <div class="cv-item-header">
+            <div class="cv-item-title">${escHtml(exp.company)}</div>
+            <div class="cv-item-date">${escHtml(exp.startDate)} - ${escHtml(exp.endDate)}</div>
+          </div>
+          <div class="cv-item-subtitle">${escHtml(exp.role)}</div>
+          <div class="cv-item-desc">${escHtml(exp.description || '')}</div>
+        </div>
+      `;
+    });
+    
+    html += `
+          </div>
+        </div>
+        
+        <!-- Sertifikalar -->
+        <div class="cv-section">
+          <p class="panel-section-title">SERTİFİKALAR</p>
+          <div class="cv-certs-grid">
+    `;
+    
+    (data.certificates || []).forEach(cert => {
+      html += `
+        <div class="cv-cert-card">
+          <div class="cv-cert-name">${escHtml(cert.name)}</div>
+          <div class="cv-cert-meta">
+            <span class="cv-cert-org">${escHtml(cert.organization)}</span>
+            <span class="cv-cert-date">${escHtml(cert.date)}</span>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += `
+          </div>
+        </div>
+
+        <!-- Kullanılan Programlar / Yetenekler -->
+        <div class="cv-section">
+          <p class="panel-section-title">KULLANILAN PROGRAMLAR &amp; YETENEKLER</p>
+          <div class="cv-skills-list">
+    `;
+
+    (data.skills || []).forEach(skill => {
+      html += `
+        <span class="cv-skill-badge">${escHtml(skill)}</span>
+      `;
+    });
+
+    html += `
+          </div>
+        </div>
+      </div>
+    `;
+    
+    panelBody.innerHTML = html;
+  } catch (e) {
+    panelBody.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">✕</div>
+        <p>CV verileri yüklenirken hata oluştu.</p>
+      </div>`;
   }
 }
 
