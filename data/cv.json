@@ -4,58 +4,88 @@
   "profilePhoto": "fotograf/cv-profile.webp",
   "education": [
     {
-      "school": "Bingöl Üniversitesi",
-      "department": "Görsel İşitsel Teknikler ve Medya Yapımcılığı",
-      "startDate": "2019",
-      "endDate": "2021",
-      "description": "Radyo ve Televizyon Programcılığı alanında teorik ve pratik eğitim."
+      "school": "Elazığ Ticaret Meslek Lisesi",
+      "department": "Web Tasarım Programcılığı",
+      "startDate": "2009",
+      "endDate": "2013",
+      "description": ""
     },
     {
-      "school": "Anadolu Üniversitesi",
-      "department": "Medya ve İletişim (Lisans)",
-      "startDate": "2021",
-      "endDate": "Devam Ediyor",
-      "description": "Kitle iletişimi, marka yönetimi ve dijital medya stratejileri üzerine uzmanlık."
+      "school": "Ordu Üniversitesi / Lisans",
+      "department": "İktisat ",
+      "startDate": "2015",
+      "endDate": "2020",
+      "description": ""
     }
   ],
   "experience": [
     {
-      "company": "Bingöl Üniversitesi Rektörlüğü",
-      "role": "Medya Birimi Sorumlusu & Grafik Tasarımcı",
-      "startDate": "2022",
-      "endDate": "Devam Ediyor",
-      "description": "Rektörlük bünyesindeki tüm video prodüksiyon, tanıtım filmleri, sosyal medya görselleri ve kurumsal tasarımların hazırlanması."
+      "company": "Arvato Bertelsmann",
+      "role": "Müşteri Temsilcisi Agent",
+      "startDate": "2014",
+      "endDate": "2015",
+      "description": ""
     },
     {
-      "company": "Freelance",
-      "role": "Video Prodüktör & Dijital İçerik Üreticisi",
-      "startDate": "2019",
-      "endDate": "2022",
-      "description": "Çeşitli markalar için tanıtım videoları, reklam filmleri, kurgu ve post-prodüksiyon hizmetleri."
+      "company": "Grafikkent",
+      "role": "Grafiker",
+      "startDate": "2020",
+      "endDate": "2021",
+      "description": ""
+    },
+    {
+      "company": "Elefante Reklam Ajansı",
+      "role": "İşyeri Sahibi",
+      "startDate": "2021",
+      "endDate": "",
+      "description": ""
+    },
+    {
+      "company": "Elazığ Ticaret ve Sanayi Odası",
+      "role": "Basın Danışmanı",
+      "startDate": "2023",
+      "endDate": "2024",
+      "description": ""
+    },
+    {
+      "company": "Elazığ Teknokent Hasis Teknoloji",
+      "role": "UI ve UX Tasarımcısı / Reklam Sorumlusu",
+      "startDate": "2025",
+      "endDate": "",
+      "description": ""
     }
   ],
   "certificates": [
     {
-      "name": "İleri Düzey Adobe Premiere Pro & After Effects",
-      "organization": "Adobe Certified Professional",
-      "date": "2022"
+      "name": "GRAFİK TASARIM EĞİTİMİ",
+      "organization": "Adıgüzel MYO",
+      "date": "2026"
     },
     {
-      "name": "Profesyonel Grafik Tasarım & Tipografi Eğitimi",
-      "organization": "BTK Akademi",
-      "date": "2023"
+      "name": "GİRİŞİMCİLİK EĞİTİMİ",
+      "organization": "Adıgüzel MYO",
+      "date": "2026"
     },
     {
-      "name": "Dijital Fotoğrafçılık ve Işık Teknikleri",
-      "organization": "İstanbul İşletme Enstitüsü",
-      "date": "2021"
+      "name": "PYTHON İLE YAPAY ZEKA & VERİ BİLİMİ UZMANLIĞI EĞİTİMİ",
+      "organization": "Adıgüzel MYO",
+      "date": "2026"
+    },
+    {
+      "name": "ÖN MUHASEBE EĞİTİMİ",
+      "organization": "Adıgüzel MYO",
+      "date": "2026"
+    },
+    {
+      "name": "\tSosyal Medyada İçerik Üretim Süreci, Hikâye Anlatıcılığı ve Görsel Dil",
+      "organization": "Bilgi Teknolojileri Kurumu",
+      "date": "2026"
     }
   ],
   "skills": [
     "CorelDraw",
     "Photoshop",
     "Premiere Pro",
-    "After Effects",
     "Lightroom",
     "Illustrator"
   ]
