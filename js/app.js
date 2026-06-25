@@ -126,7 +126,7 @@ async function renderCVPanel() {
         <!-- Header / Profil Kartı -->
         <div class="cv-header">
           <div class="cv-avatar-wrap">
-            <img src="${data.profilePhoto || 'fotograf/cv-profile.webp'}" alt="${escHtml(data.name)}" class="cv-avatar" onerror="this.src='https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'">
+            <img src="${data.profilePhoto || 'fotograf/cv-profile.webp'}?t=${Date.now()}" alt="${escHtml(data.name)}" class="cv-avatar" onerror="this.src='https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'">
           </div>
           <div class="cv-header-info">
             <h3>${escHtml(data.name)}</h3>
